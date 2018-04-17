@@ -157,7 +157,10 @@ public class Edge {
             g2.setColor(Color.BLACK);
             for(int i = 0 ; i < values.size(); i++){
                 Transicao t = values.get(i);
+               
                 Point m = new Point((int)b.x, (int)b.y-i*45);
+                //t.setPoint(m);
+                
                 desenhaLabel(g2, a, m, t.getLabel()+" ; "+t.getFita()+" ; "+t.getSentido());
                 
             }
@@ -176,6 +179,8 @@ public class Edge {
                 Point m = new Point((int)this.source.getX()-10, (int)this.source.getY()- 55 -i*20);
                 //desenhaLabel(g2, m, m, values.get(i).getLabel());
                 //desenhaLabel(g2, m, m, values.get(i).getLabel());
+                //t.setPoint(m);
+                
                 desenhaLabel(g2, m, m, t.getLabel()+" ; "+t.getFita()+" ; "+t.getSentido());
 
 
@@ -212,7 +217,7 @@ public class Edge {
         
         for(int i = 0; i < this.values.size(); i++){
             Transicao aux = this.values.get(i);
-            String labelValue = aux.getLabel()+";"+aux.getFita()+";"+aux.getSentido();
+            String labelValue = aux.getLabel()+" ; "+aux.getFita()+" ; "+aux.getSentido();
             if(labelValue.equals(label)) this.values.get(i).setPoint(new Point((int)transX-label.length()*2, (int)transY-5));
         }
         

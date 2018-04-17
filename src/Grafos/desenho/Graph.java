@@ -100,7 +100,7 @@ public class Graph {
 
                 label = aux.getValue();
 
-                System.out.println("Aresta (" + aux.getInicio().getID() + "," + aux.getFim().getID() + ") = " + aux.getValue());
+                System.out.println("Aresta (" + aux.getInicio().getID() + "," + aux.getFim().getID() + ") = " + aux.getValue()+" , "+aux.getFita()+" , "+aux.getSentido());
 
                 if (index >= input.length()) {
                     System.out.println("entrou aqui");
@@ -158,6 +158,7 @@ public class Graph {
             transicao.setLabel(e.getLabel());
             transicao.setFita(e.getFita());
             transicao.setSentido(e.getSentido());
+            transicao.setPoint(new Point((int) e.getxLabel(), (int) e.getyLabel()));
             e.getValues().add(transicao);
             this.edges.add(e);
         } else {
@@ -307,6 +308,7 @@ public class Graph {
                     || (this.edges.get(j).getTarget().equals(v))) {
                 for (int i = 0; i < this.edges.get(j).getValues().size(); i++) {
                     this.excluirAresta(this.edges.get(j).getValues().get(i));
+                    break;
                 }
             } else {
                 j++;
