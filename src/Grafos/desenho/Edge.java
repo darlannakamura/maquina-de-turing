@@ -158,7 +158,7 @@ public class Edge {
             for(int i = 0 ; i < values.size(); i++){
                 Transicao t = values.get(i);
                 Point m = new Point((int)b.x, (int)b.y-i*45);
-                desenhaLabel(g2, a, m, t.getLabel()+";"+t.getFita()+";"+t.getSentido());
+                desenhaLabel(g2, a, m, t.getLabel()+" ; "+t.getFita()+" ; "+t.getSentido());
                 
             }
         } else 
@@ -172,9 +172,12 @@ public class Edge {
             g2.setColor(Color.BLACK);
             Point l = new Point((int)this.source.getX()-10, (int)this.source.getY() - 55);
             for(int i = 0 ; i < values.size(); i++){
+                Transicao t = values.get(i);
                 Point m = new Point((int)this.source.getX()-10, (int)this.source.getY()- 55 -i*20);
                 //desenhaLabel(g2, m, m, values.get(i).getLabel());
-                desenhaLabel(g2, m, m, values.get(i).getLabel());
+                //desenhaLabel(g2, m, m, values.get(i).getLabel());
+                desenhaLabel(g2, m, m, t.getLabel()+" ; "+t.getFita()+" ; "+t.getSentido());
+
 
                 
             }
@@ -208,7 +211,9 @@ public class Edge {
         yLabel = transY -5;
         
         for(int i = 0; i < this.values.size(); i++){
-            if(this.values.get(i).getLabel().equals(label)) this.values.get(i).setPoint(new Point((int)transX-label.length()*2, (int)transY-5));
+            Transicao aux = this.values.get(i);
+            String labelValue = aux.getLabel()+";"+aux.getFita()+";"+aux.getSentido();
+            if(labelValue.equals(label)) this.values.get(i).setPoint(new Point((int)transX-label.length()*2, (int)transY-5));
         }
         
         g2.drawString(label, transX-label.length()*2, transY - 5);

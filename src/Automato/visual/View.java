@@ -461,60 +461,85 @@ public class View extends javax.swing.JFrame {
 //        view.cleanImage();
 //        painel.repaint();
 //    }
-    public void abreArquivo(String path) throws FileNotFoundException {
+    public void abreArquivo(String path) throws FileNotFoundException{
         FileReader fr = new FileReader(path);
         BufferedReader br = new BufferedReader(fr);
+        String linha;
         try {
-            String linha = br.readLine();
-            while (linha != null) {
-
-                if (linha.contains("<state")) {
+            linha = br.readLine();
+            while(linha != null){
+                linha = linha.replace("&#13;", "");
+                if(linha.contains("<type>")){
+                    linha = linha.replace("<type>", "");
+                    linha = linha.replace("</type>", "");
+                    linha = linha.replace(" ", "");
+//                    if(!linha.equals("turing")){;
+//                        break;
+//                    }     JOptionPane.showMessageDialog(null, "Tipo de arquivo não é uma máquina de turing!");
+//                        break;
+//                    }
+                      if(!linha.contains("turing")){
+                          JOptionPane.showMessageDialog(null, "Tipo de arquivo não é uma máquina de turing!");
+//                        break;
+                      }
+                }
+                if(linha.contains("<block")){
                     Vertex v = new Vertex();
-                    while (!linha.contains("</state>")) {
+                    while (!linha.contains("</block>")) {
 
                         int inicio = linha.lastIndexOf("name=\"");
                         int fim = linha.lastIndexOf("\">");
                         String id = linha.substring(inicio, fim);
                         id = id.replace("name=\"", "");
                         v.setID(id);
+                        
                         //proxima linha é o x
                         linha = br.readLine();
+                        linha = linha.replace("&#13;", "");
+                        if(linha.contains("<tag>")) {
+                            linha = br.readLine();
+                            linha = linha.replace("&#13;", "");
+                        }
+                        
                         linha = linha.replace("<x>", "");
                         linha = linha.replace("</x>", "");
                         float x = Float.parseFloat(linha);
                         v.setX(x);
                         //proxima linha é o y
                         linha = br.readLine();
-
+                        linha = linha.replace("&#13;", "");
                         linha = linha.replace("<y>", "");
                         linha = linha.replace("</y>", "");
                         float y = Float.parseFloat(linha);
                         v.setY(y);
 
                         linha = br.readLine();
-
+                        linha = linha.replace("&#13;", "");
                         if (linha.contains("<initial")) {
                             v.setInicial(true);
                             linha = br.readLine();
+                            linha = linha.replace("&#13;", "");
                         }
                         if (linha.contains("<final")) {
                             v.setEstFinal(true);
                             linha = br.readLine();
+                            linha = linha.replace("&#13;", "");
 
                         }
-
+                        
                     }
                     graph.addVertex(v);
-                } else if (linha.contains("<transition>")) {
+                }  else if (linha.contains("<transition>")) {
                     Vertex source = null;
                     Vertex target = null;
                     //proxima linha é o from:
                     linha = br.readLine();
+                    linha = linha.replace("&#13;", "");
                     linha = linha.replace("<from>", "");
                     linha = linha.replace("</from>", "");
                     linha = linha.replace(" ", "");
 
-                    int indice = Integer.parseInt(linha);
+                    int indice = (int) Float.parseFloat(linha);
                     for (int i = 0; i < graph.vertex.size(); i++) {
                         if (indice == graph.vertex.get(i).getPosition()) {
                             source = graph.vertex.get(i);
@@ -522,10 +547,11 @@ public class View extends javax.swing.JFrame {
                     }
                     //acabei de setar o from, agora é o <to>:
                     linha = br.readLine();
+                    linha = linha.replace("&#13;", "");
                     linha = linha.replace("<to>", "");
                     linha = linha.replace("</to>", "");
                     linha = linha.replace(" ", "");
-                    indice = Integer.parseInt(linha);
+                    indice = (int) Float.parseFloat(linha);
                     for (int i = 0; i < graph.vertex.size(); i++) {
                         if (indice == graph.vertex.get(i).getPosition()) {
                             target = graph.vertex.get(i);
@@ -533,23 +559,113 @@ public class View extends javax.swing.JFrame {
                     }
                     //acabei de setar  o to, agora a proxima linha é o label:
                     linha = br.readLine();
+                   
+                    linha = linha.replace("&#13;", "");
                     linha = linha.replace("<read>", "");
                     linha = linha.replace("</read>", "");
                     linha = linha.replace(" ", "");
+                    linha = linha.replace("\t", "");
                     String label = linha;
-                    Edge edge = new Edge(source, target, label);
+                    
+                    linha = br.readLine();
+                    linha = linha.replace("&#13;", "");
+                    linha = linha.replace("<write>", "");
+                    linha = linha.replace("</write>", "");
+                    linha = linha.replace(" ", "");
+                    linha = linha.replace("\t", "");
+                    String fita = linha;
+                    
+                    linha = br.readLine();
+                    linha = linha.replace("&#13;", "");
+                    linha = linha.replace("<move>", "");
+                    linha = linha.replace("</move>", "");
+                    linha = linha.replace(" ", "");
+                    linha = linha.replace("\t", "");
+                    char direcao = linha.charAt(0);
+                    
+                    if(label.equals("<read/>")) label = "VAZIO";
+                    if(fita.equals("<write/>"))  fita = "VAZIO";
+                    Edge edge = new Edge(source, target, label, fita, direcao);
                     graph.addEdge(edge);
                 }
                 linha = br.readLine();
+                }
+               contador = graph.vertex.size();
+        } catch (IOException ex) {
+            Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+            
+        
+    }
+    
+    private void salvarArquivo(String path){
+         try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(path));
+            FileWriter fw = new FileWriter(path);
+            Graph aux = graph;
+            String html = "";
+            //inicio do arquivo:
+            html += "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><!--Created with Nakamura and Santos JFlap - 2017.--><structure>\n";
+
+            html += "<type>turing</type>\n"
+                    + "  <automaton>\n"
+                    + "		<!--The list of states.-->\n";
+
+            //List of States:
+            for (int i = 0; i < graph.vertex.size(); i++) {
+                html += "   <block id=\"" + i + "\" name=\"" + graph.vertex.get(i).getID() + "\">\n";
+                html += "       <tag>"+"Machine"+i+"</tag>\n";
+                html += "       <x>" + graph.vertex.get(i).getX() + "</x>\n";
+                html += "       <y>" + graph.vertex.get(i).getY() + "</y>\n";
+                if (graph.vertex.get(i).isInicial()) {
+                    html += "       <initial/>\n";
+                }
+                if (graph.vertex.get(i).isEstFinal()) {
+                    html += "       <final/>\n";
+                }
+                html += "   </block>\n";
             }
 
-            contador = graph.vertex.size();
+            //List of transitions:
+            html += "   <!--The list of transitions.-->\n";
+
+            for (int i = 0; i < graph.edges.size(); i++) {
+                for (int j = 0; j < graph.edges.get(i).getValues().size(); j++) {
+                    html += "   <transition>\n";
+                    html += "       <from>" + graph.edges.get(i).getSource().getPosition() + "</from>\n";
+                    html += "       <to>" + graph.edges.get(i).getTarget().getPosition() + "</to>\n";
+                    if(graph.edges.get(i).getValues().get(j).getLabel().equals("VAZIO")) html+="<read/>\n";
+                    else html += "       <read>" + graph.edges.get(i).getValues().get(j).getLabel() + "</read>\n";
+                    if(graph.edges.get(i).getValues().get(j).getFita().equals("VAZIO")) html+="<write/>\n";
+                    else html += "       <write>" + graph.edges.get(i).getValues().get(j).getFita()+ "</write>\n";
+                    html += "       <move>" + graph.edges.get(i).getValues().get(j).getSentido()+ "</move>\n";
+                   
+                    html += "   </transition>\n";
+                }
+
+            }
+            
+            html += "<!--The list of automata-->\n";
+            for(int i =0  ; i < graph.vertex.size(); i++){
+                html += "<Machine"+i+"/>\n";
+            }
+
+            html += " </automaton>\n"
+                    + "</structure>";
+
+            fw.write(html);
+            JOptionPane.showMessageDialog(null, "Arquivo salvo com sucesso!");
+            fw.close();
+            bw.close();
+
         } catch (IOException ex) {
             Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void salvarArquivo(String path) {
+
+    private void salvarArquivoAntigo(String path) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(path));
             FileWriter fw = new FileWriter(path);
@@ -801,6 +917,7 @@ public class View extends javax.swing.JFrame {
                 if (destino != -1) {
 
                     String inputDialog = JOptionPane.showInputDialog(null, "Add Transição: Ex: a;VAZIO;L");
+                    
 
                     if (inputDialog != null) {
                         if (inputDialog.equals("")) {
