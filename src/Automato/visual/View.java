@@ -6,6 +6,7 @@
 package Automato.visual;
 
 import Grafos.desenho.Edge;
+import Grafos.desenho.Fita;
 import Grafos.desenho.Graph;
 import Grafos.desenho.Transicao;
 import Grafos.desenho.Vertex;
@@ -45,6 +46,9 @@ import javax.swing.JPanel;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 
 /**
  *
@@ -60,6 +64,7 @@ public class View extends javax.swing.JFrame {
     private int incr = 0;
     private String path;
     private AbrirArquivo aa;
+    private Fita fita;
 
     //Select 0 : Movimentar
     //Select 1 : Estados
@@ -74,10 +79,10 @@ public class View extends javax.swing.JFrame {
         this.view = new ViewPanel();
         graph = new Graph();
         initComponents();
-        jPanel1.setVisible(false);
-
+        //jPanel1.setVisible(false);
         contador = 0;
-
+        
+     
         this.view.addMouseMotionListener(new Mouse());
         this.view.addMouseListener(new EventoMouse());
         jButton5.setVisible(false);
@@ -85,6 +90,9 @@ public class View extends javax.swing.JFrame {
 
         path = "";
         jMenuItem8.setEnabled(false);
+
+        jTextPane1.setEditable(false);
+
     }
 
     /**
@@ -107,7 +115,8 @@ public class View extends javax.swing.JFrame {
         jButton5 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextPane1 = new javax.swing.JTextPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
@@ -186,27 +195,30 @@ public class View extends javax.swing.JFrame {
 
         jLabel1.setText("FITA:");
 
+        jScrollPane1.setViewportView(jTextPane1);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 830, Short.MAX_VALUE))
-                    .addComponent(jTextField2))
-                .addContainerGap())
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1075, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
 
         jMenu1.setText("Arquivo");
@@ -304,7 +316,7 @@ public class View extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(painel, javax.swing.GroupLayout.DEFAULT_SIZE, 910, Short.MAX_VALUE))
+                    .addComponent(painel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton1)
@@ -315,7 +327,7 @@ public class View extends javax.swing.JFrame {
                     .addComponent(jButton6)
                     .addComponent(jButton5)
                     .addComponent(respostaText, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap(76, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -403,8 +415,23 @@ public class View extends javax.swing.JFrame {
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         String input = JOptionPane.showInputDialog(null, "Digite a entrada:");
+        
+        fita = new Fita(input);
+        
+        boolean resposta = graph.execucaoRapida(fita);
+         printarFita();
+          if (resposta) {
+                jTextPane1.setForeground(Color.GREEN);
+                JOptionPane.showMessageDialog(null, "Pertence a linguagem!");
+                
+            } else {
+                jTextPane1.setForeground(Color.RED);
+                JOptionPane.showMessageDialog(null, "Não pertence a linguagem.");
+            }
+        
+       
+        
 
-        graph.execucaoRapida(input);
 
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
@@ -497,15 +524,33 @@ public class View extends javax.swing.JFrame {
 //        view.cleanImage();
 //        painel.repaint();
 //    }
-    public void abreArquivo(String path) throws FileNotFoundException{
+    public void printarFita() {
+        jTextPane1.setContentType("text/html");
+        String html = "";
+        html += "<html><body><p style=\"font-size:20pt; \">";
+       
+
+        for (int i = 0; i < fita.getConteudo().length; i++) {
+            if(i == fita.getPonteiro()){
+                html += "<span style=\"background-color: blue;\">"+fita.getConteudo()[i]+"</span>";
+            }
+            else{
+                html += fita.getConteudo()[i];
+            }
+        }
+         html += "</body></html>";
+        jTextPane1.setText(html);
+    }
+
+    public void abreArquivo(String path) throws FileNotFoundException {
         FileReader fr = new FileReader(path);
         BufferedReader br = new BufferedReader(fr);
         String linha;
         try {
             linha = br.readLine();
-            while(linha != null){
+            while (linha != null) {
                 linha = linha.replace("&#13;", "");
-                if(linha.contains("<type>")){
+                if (linha.contains("<type>")) {
                     linha = linha.replace("<type>", "");
                     linha = linha.replace("</type>", "");
                     linha = linha.replace(" ", "");
@@ -514,12 +559,12 @@ public class View extends javax.swing.JFrame {
 //                    }     JOptionPane.showMessageDialog(null, "Tipo de arquivo não é uma máquina de turing!");
 //                        break;
 //                    }
-                      if(!linha.contains("turing")){
-                          JOptionPane.showMessageDialog(null, "Tipo de arquivo não é uma máquina de turing!");
+                    if (!linha.contains("turing")) {
+                        JOptionPane.showMessageDialog(null, "Tipo de arquivo não é uma máquina de turing!");
 //                        break;
-                      }
+                    }
                 }
-                if(linha.contains("<block")){
+                if (linha.contains("<block")) {
                     Vertex v = new Vertex();
                     while (!linha.contains("</block>")) {
 
@@ -528,15 +573,15 @@ public class View extends javax.swing.JFrame {
                         String id = linha.substring(inicio, fim);
                         id = id.replace("name=\"", "");
                         v.setID(id);
-                        
+
                         //proxima linha é o x
                         linha = br.readLine();
                         linha = linha.replace("&#13;", "");
-                        if(linha.contains("<tag>")) {
+                        if (linha.contains("<tag>")) {
                             linha = br.readLine();
                             linha = linha.replace("&#13;", "");
                         }
-                        
+
                         linha = linha.replace("<x>", "");
                         linha = linha.replace("</x>", "");
                         float x = Float.parseFloat(linha);
@@ -562,10 +607,10 @@ public class View extends javax.swing.JFrame {
                             linha = linha.replace("&#13;", "");
 
                         }
-                        
+
                     }
                     graph.addVertex(v);
-                }  else if (linha.contains("<transition>")) {
+                } else if (linha.contains("<transition>")) {
                     Vertex source = null;
                     Vertex target = null;
                     //proxima linha é o from:
@@ -595,14 +640,14 @@ public class View extends javax.swing.JFrame {
                     }
                     //acabei de setar  o to, agora a proxima linha é o label:
                     linha = br.readLine();
-                   
+
                     linha = linha.replace("&#13;", "");
                     linha = linha.replace("<read>", "");
                     linha = linha.replace("</read>", "");
                     linha = linha.replace(" ", "");
                     linha = linha.replace("\t", "");
                     String label = linha;
-                    
+
                     linha = br.readLine();
                     linha = linha.replace("&#13;", "");
                     linha = linha.replace("<write>", "");
@@ -610,7 +655,7 @@ public class View extends javax.swing.JFrame {
                     linha = linha.replace(" ", "");
                     linha = linha.replace("\t", "");
                     String fita = linha;
-                    
+
                     linha = br.readLine();
                     linha = linha.replace("&#13;", "");
                     linha = linha.replace("<move>", "");
@@ -618,25 +663,27 @@ public class View extends javax.swing.JFrame {
                     linha = linha.replace(" ", "");
                     linha = linha.replace("\t", "");
                     char direcao = linha.charAt(0);
-                    
-                    if(label.equals("<read/>")) label = "VAZIO";
-                    if(fita.equals("<write/>"))  fita = "VAZIO";
+
+                    if (label.equals("<read/>")) {
+                        label = "VAZIO";
+                    }
+                    if (fita.equals("<write/>")) {
+                        fita = "VAZIO";
+                    }
                     Edge edge = new Edge(source, target, label, fita, direcao);
                     graph.addEdge(edge);
                 }
                 linha = br.readLine();
-                }
-               contador = graph.vertex.size();
+            }
+            contador = graph.vertex.size();
         } catch (IOException ex) {
             Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-            
-        
+
     }
-    
-    private void salvarArquivo(String path){
-         try {
+
+    private void salvarArquivo(String path) {
+        try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(path));
             FileWriter fw = new FileWriter(path);
             Graph aux = graph;
@@ -651,7 +698,7 @@ public class View extends javax.swing.JFrame {
             //List of States:
             for (int i = 0; i < graph.vertex.size(); i++) {
                 html += "   <block id=\"" + i + "\" name=\"" + graph.vertex.get(i).getID() + "\">\n";
-                html += "       <tag>"+"Machine"+i+"</tag>\n";
+                html += "       <tag>" + "Machine" + i + "</tag>\n";
                 html += "       <x>" + graph.vertex.get(i).getX() + "</x>\n";
                 html += "       <y>" + graph.vertex.get(i).getY() + "</y>\n";
                 if (graph.vertex.get(i).isInicial()) {
@@ -671,20 +718,26 @@ public class View extends javax.swing.JFrame {
                     html += "   <transition>\n";
                     html += "       <from>" + graph.edges.get(i).getSource().getPosition() + "</from>\n";
                     html += "       <to>" + graph.edges.get(i).getTarget().getPosition() + "</to>\n";
-                    if(graph.edges.get(i).getValues().get(j).getLabel().equals("VAZIO")) html+="<read/>\n";
-                    else html += "       <read>" + graph.edges.get(i).getValues().get(j).getLabel() + "</read>\n";
-                    if(graph.edges.get(i).getValues().get(j).getFita().equals("VAZIO")) html+="<write/>\n";
-                    else html += "       <write>" + graph.edges.get(i).getValues().get(j).getFita()+ "</write>\n";
-                    html += "       <move>" + graph.edges.get(i).getValues().get(j).getSentido()+ "</move>\n";
-                   
+                    if (graph.edges.get(i).getValues().get(j).getLabel().equals("VAZIO")) {
+                        html += "<read/>\n";
+                    } else {
+                        html += "       <read>" + graph.edges.get(i).getValues().get(j).getLabel() + "</read>\n";
+                    }
+                    if (graph.edges.get(i).getValues().get(j).getFita().equals("VAZIO")) {
+                        html += "<write/>\n";
+                    } else {
+                        html += "       <write>" + graph.edges.get(i).getValues().get(j).getFita() + "</write>\n";
+                    }
+                    html += "       <move>" + graph.edges.get(i).getValues().get(j).getSentido() + "</move>\n";
+
                     html += "   </transition>\n";
                 }
 
             }
-            
+
             html += "<!--The list of automata-->\n";
-            for(int i =0  ; i < graph.vertex.size(); i++){
-                html += "<Machine"+i+"/>\n";
+            for (int i = 0; i < graph.vertex.size(); i++) {
+                html += "<Machine" + i + "/>\n";
             }
 
             html += " </automaton>\n"
@@ -699,7 +752,6 @@ public class View extends javax.swing.JFrame {
             Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
 
     private void salvarArquivoAntigo(String path) {
         try {
@@ -795,9 +847,6 @@ public class View extends javax.swing.JFrame {
         return false;
     }
 
-
-
-
     public class EventoMouse extends MouseAdapter {
 
         public Edge getTransicao() {
@@ -853,7 +902,7 @@ public class View extends javax.swing.JFrame {
                 if (view.getSelectedVertex() != null) {
                     //ou seja tiver um vértice selecionado
                     graph.excluirVertice(view.getSelectedVertex());
-                    
+
                     //            if(graph.vertex.size() == 0)
                     //                graph = null;
                     //            System.out.println("teste");
@@ -954,12 +1003,11 @@ public class View extends javax.swing.JFrame {
                 if (destino != -1) {
 
                     String inputDialog = JOptionPane.showInputDialog(null, "Add Transição: Ex: a;VAZIO;L");
-                    
 
                     if (inputDialog != null) {
                         if (inputDialog.equals("")) {
                             inputDialog = "VAZIO;VAZIO;R";
-                            
+
                         }
                         String[] array = inputDialog.split(";");
                         char direcao = array[2].charAt(0);
@@ -971,7 +1019,6 @@ public class View extends javax.swing.JFrame {
 //                        edge.setSource(graph.vertex.get(origem));
 //                        edge.setTarget(graph.vertex.get(destino));
 //                        graph.addEdge(edge);
-
                         view.cleanImage();
                         painel.repaint();
                     }
@@ -1344,7 +1391,8 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextPane jTextPane1;
     private javax.swing.JScrollPane painel;
     private javax.swing.JLabel respostaText;
     // End of variables declaration//GEN-END:variables

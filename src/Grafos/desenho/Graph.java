@@ -67,69 +67,103 @@ public class Graph {
         return null;
     }
 
-    public boolean buscaLargura(Estado e, String input) {
-        int v;
-        int inicio = estados.indexOf(e);
-        String label = "";
-        int quantidadeVertices = vertex.size();
-
+    public boolean buscaLargura(Estado e, Fita fita){
         Fila fila = new Fila();
-
-        fila.insere(e, 0); //inserimos o estado e o index do input
-        System.out.println("Busca em Largura : \n");
-        while (!fila.vazia()) { //enquanto a fila NÃO for vazia, faça:
-            Estrutura estrutura = fila.remove(); //removo o primeiro elemento da fila.
-
-            verticesSolucao.add(estrutura.getEstado().getID());
-            Estado estado = estrutura.getEstado();
-            int index = estrutura.getIndex();
-            System.out.println("Removeu da fila = " + estado.getID());
-
-            int indice = retornaIndiceNosEstados(estado);
-
-            if (estados.get(indice).iseFinal() && index >= input.length()) {
-                System.out.println("Index final = " + index);
-                System.out.println("Pertence a linguagem.");
-                //return true;
-                return true;
-            }
-
-            Aresta aux = estados.get(indice).getArestaInicial();
-            while (aux != null) {
-                //vou pegar todas as adjacencias do estado, ou melhor, todas as arestas:
-
-                label = aux.getValue();
-
-                System.out.println("Aresta (" + aux.getInicio().getID() + "," + aux.getFim().getID() + ") = " + aux.getValue()+" , "+aux.getFita()+" , "+aux.getSentido());
-
-                if (index >= input.length()) {
-                    System.out.println("entrou aqui");
-                    return false;
-
-                } //vou verificar SE o input, substring de input até o tamanho do elemento, é igual ao elemento.
-                else if (aux.getValue().equals("VAZIO")) {
-                    fila.insere(aux.getFim(), index);
-                } else if (input.substring(index, index + aux.getValue().length()).equals(aux.getValue())) {
-
-                    //Aqui vem o tratamento mais importante: Verificarmos se chegou, ou seja, se dado o input apresentado
-                    //com o caractere apresentado nessa aresta estão iguais até o momento
-                    //Se for VAZIO, nós só pulamos para o vértice final.
-                    System.out.println("Vamos inserir na fila o :" + aux.getFim().getID());
-                    Estado fim = aux.getFim();
-                    int id2;
-                    id2 = index + aux.getValue().length();
-
-                    fila.insere(fim, id2);
-                }
-                aux = aux.getProx();
-            }
-
-        }
-        System.out.println("Acabou");
-
-        return false;
-
+        
+       fila.insere(e);
+       
+       while(!fila.vazia()){
+           Estado estado = fila.remove();
+           
+           verticesSolucao.add(estado.getID());
+           System.out.println("Removeu da Fila = "+estado.getID());
+           int indice = retornaIndiceNosEstados(estado);
+           estado = estados.get(indice);
+           if(estado.iseFinal()) return true;
+           
+           Aresta aux = estado.getArestaInicial();
+           while(aux != null){ //percorrerei todas as adjacências:
+               if(fita.retorna() == aux.getValue().charAt(0)){
+                   fita.write(aux.getFita().charAt(0));
+                   fita.anda(aux.getSentido());
+                   
+                   fila.insere(aux.getFim());
+                   break;
+               }
+               
+               aux = aux.getProx();
+           }
+           
+       }
+       return false;
     }
+    
+//    public boolean buscaLarguraAntiga(Estado e, String input) {
+//        int v;
+//        int inicio = estados.indexOf(e);
+//        String label = "";
+//        int quantidadeVertices = vertex.size();
+//
+//        Fila fila = new Fila();
+//
+//        fila.insere(e, 0); //inserimos o estado e o index do input
+//        System.out.println("Busca em Largura : \n");
+//        while (!fila.vazia()) { //enquanto a fila NÃO for vazia, faça:
+//            Estrutura estrutura = fila.remove(); //removo o primeiro elemento da fila.
+//
+//            verticesSolucao.add(estrutura.getEstado().getID());
+//            Estado estado = estrutura.getEstado();
+//            int index = estrutura.getIndex();
+//            System.out.println("Removeu da fila = " + estado.getID());
+//
+//            int indice = retornaIndiceNosEstados(estado);
+//
+//            if (estados.get(indice).iseFinal() && index >= input.length()) {
+//                System.out.println("Index final = " + index);
+//                System.out.println("Pertence a linguagem.");
+//                //return true;
+//                return true;
+//            }
+//
+//            Aresta aux = estados.get(indice).getArestaInicial();
+//            while (aux != null) {
+//                //vou pegar todas as adjacencias do estado, ou melhor, todas as arestas:
+//
+//                label = aux.getValue();
+//
+//                System.out.println("Aresta (" + aux.getInicio().getID() + "," + aux.getFim().getID() + ") = " + aux.getValue()+" , "+aux.getFita()+" , "+aux.getSentido());
+//
+//                
+//                 String substring = input.substring(index, index + aux.getValue().length());
+//                 
+//                if (index >= input.length()) {
+//                    System.out.println("entrou aqui");
+//                    return false;
+//      
+//                } //vou verificar SE o input, substring de input até o tamanho do elemento, é igual ao elemento.
+//                else if (aux.getValue().equals("VAZIO")) {
+//                    fila.insere(aux.getFim(), index);
+//                } else if (substring.equals(aux.getValue())) {
+//
+//                    //Aqui vem o tratamento mais importante: Verificarmos se chegou, ou seja, se dado o input apresentado
+//                    //com o caractere apresentado nessa aresta estão iguais até o momento
+//                    //Se for VAZIO, nós só pulamos para o vértice final.
+//                    System.out.println("Vamos inserir na fila o :" + aux.getFim().getID());
+//                    Estado fim = aux.getFim();
+//                    int id2;
+//                    id2 = index + aux.getValue().length();
+//
+//                    fila.insere(fim, id2);
+//                }
+//                aux = aux.getProx();
+//            }
+//
+//        }
+//        System.out.println("Acabou");
+//
+//        return false;
+//
+//    }
 
     public int retornaIndice(String id) {
         for (int i = 0; i < estados.size(); i++) {
@@ -404,14 +438,12 @@ public class Graph {
             Estado inicial = encontraEstadoinicial();
             boolean resposta;
             verticesSolucao = new ArrayList<>();
-            resposta = buscaLargura(inicial, input);
-            if (resposta) {
-                //percorrerVerticesSolucao();
-
-                return true;
-            } else {
-                return false;
-            }
+            
+            Fita fita = new Fita(input);
+            
+            
+            return buscaLargura(inicial, fita);
+          
             
         }
         return false;
@@ -450,10 +482,10 @@ public class Graph {
     public boolean execucaoMultiplasEntradas(String input) {
         transformaNaNovaEstrutura();
         Estado inicial = encontraEstadoinicial();
-        return buscaLargura(inicial, input);
+        return buscaLargura(inicial, new Fita(input));
     }
 
-    public void execucaoRapida(String input) {
+    public boolean execucaoRapida(Fita fita) {
         Vertex aux = retornaInicial();
         if (aux == null) {
             JOptionPane.showMessageDialog(null, "Por favor, marque um nó como inicial.");
@@ -469,15 +501,13 @@ public class Graph {
             transformaNaNovaEstrutura();
             Estado inicial = encontraEstadoinicial();
             boolean resposta;
-            resposta = buscaLargura(inicial, input);
-            if (resposta) {
-                JOptionPane.showMessageDialog(null, "Pertence a linguagem!");
-            } else {
-                JOptionPane.showMessageDialog(null, "Não pertence a linguagem.");
-            }
+            resposta = buscaLargura(inicial,fita);
+            return resposta;
+          
             //return visit(inicial.getID(), input, 0);
             //return visita(aux, input, 0, 0);
         }
+        return false;
     }
 
     public Estado encontraEstadoPeloId(String id) {

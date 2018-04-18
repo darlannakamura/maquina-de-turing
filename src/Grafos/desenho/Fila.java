@@ -13,16 +13,16 @@ import java.util.List;
  * @author Darlan Nakamura
  */
 public class Fila {
-    List<Estrutura> lista;
+    List<Estado> lista;
  
     public Fila(){
          this.lista = new LinkedList<>();
     }
-    public void insere(Estado estado, int index){
-        Estrutura e = new Estrutura(estado, index);
-        this.lista.add(e);
+    public void insere(Estado estado){
+        //Estrutura e = new Estrutura(estado, index);
+        this.lista.add(estado);
     }
-    public Estrutura remove(){
+    public Estado remove(){
         return this.lista.remove(0);
     }
     public boolean vazia(){
