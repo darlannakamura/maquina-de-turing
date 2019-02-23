@@ -1,6 +1,6 @@
 # Máquina de Turing
 
-##Sobre
+## Sobre
 Este projeto foi desenvolvido na disciplina de Teoria da Computação da Faculdade de Ciências e Tecnologia (FCT - Unesp) campus de Presidente Prudente, no curso de ciência da computação.
 
 O projeto foi desenvolvido na Linguagem [Java](https://www.java.com).
