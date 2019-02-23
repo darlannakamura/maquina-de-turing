@@ -5,53 +5,44 @@
  */
 package Grafos.desenho;
 
+import Grafos.desenho.Estado;
+
 /**
  *
  * @author Darlan Nakamura
  */
 public class Aresta {
-    private String value;
-    private String fita;
-    private char sentido; //'S' - Stop, 'L' - Left, 'R' - Right 
+   
+    public TransicaoPorFita[] fita;
     private Aresta prox;
     private Estado inicio;
     private Estado fim;
 
-    public Aresta(String value, String fita, char sentido, Aresta prox, Estado inicio, Estado fim) {
-        this.value = value;
+    public Aresta() {
+    }
+    
+    public Aresta(int quantidade){
+        fita = new TransicaoPorFita[quantidade];
+        prox = null;
+        inicio = new Estado();
+        fim = new Estado();
+    }
+
+    public Aresta(TransicaoPorFita[] fita, Aresta prox, Estado inicio, Estado fim) {
         this.fita = fita;
-        this.sentido = sentido;
         this.prox = prox;
         this.inicio = inicio;
         this.fim = fim;
     }
+    
+    
 
-    
-    
-    public String getFita() {
+    public TransicaoPorFita[] getFita() {
         return fita;
     }
 
-    public void setFita(String fita) {
+    public void setFita(TransicaoPorFita[] fita) {
         this.fita = fita;
-    }
-
-    public char getSentido() {
-        return sentido;
-    }
-
-    public void setSentido(char sentido) {
-        this.sentido = sentido;
-    }
-
-    
-    
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     public Aresta getProx() {
@@ -77,16 +68,7 @@ public class Aresta {
     public void setFim(Estado fim) {
         this.fim = fim;
     }
-
-    public Aresta() {
-    }
-
-    public Aresta(String value, Aresta prox, Estado inicio, Estado fim) {
-        this.value = value;
-        this.prox = prox;
-        this.inicio = inicio;
-        this.fim = fim;
-    }
+    
     
     
 }

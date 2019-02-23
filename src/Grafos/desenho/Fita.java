@@ -5,41 +5,55 @@
  */
 package Grafos.desenho;
 
+
 /**
  *
  * @author darla
  */
 public class Fita {
-    private char[] conteudo;
+    private StringBuilder conteudo;
     private int ponteiro;
+    
+    public Fita(String conteudo, int ponteiro){
+        this.conteudo = new StringBuilder(conteudo);
+        this.ponteiro = ponteiro;
+    }
 
     public Fita(String conteudo) {
-        this.conteudo = new char[100];
-        this.conteudo[0] = '*';
-        this.conteudo[1] = '*';
-        this.conteudo[2] = '*';
-        this.conteudo[3] = '@';
-        int j = 0;
-        for(int i = 4; i < 100; i++){
-            if(j < conteudo.length()){
-                this.conteudo[i] = conteudo.charAt(j);
-                j++;
-            }else{
-                this.conteudo[i] = '*';
-            }
-            
+//        this.conteudo = new char[100];
+//        this.conteudo[0] = '*';
+//        this.conteudo[1] = '*';
+//        this.conteudo[2] = '*';
+//        this.conteudo[3] = '@';
+        //this.conteudo = "***@"+conteudo;
+          this.conteudo = new StringBuilder("****"+conteudo);
+//        int j = 0;
+//        for(int i = 4; i < 100; i++){
+//            if(j < conteudo.length()){
+//                this.conteudo[i] = conteudo.charAt(j);
+//                j++;
+//            }else{
+//                this.conteudo[i] = '*';
+//            }
+//            
+//        }
+        for(int i = 0 ; i < 100 - this.conteudo.length(); i++){
+            this.conteudo.append("*");
         }
         this.ponteiro = 4;
     }
 
-    public char[] getConteudo() {
-        return conteudo;
+    public String getConteudo() {
+        return conteudo.toString();
     }
 
-    public void setConteudo(char[] conteudo) {
-        this.conteudo = conteudo;
+    public void setConteudo(String conteudo) {
+        //this.conteudo = conteudo;
+        this.conteudo = new StringBuilder(conteudo);
     }
-
+    
+    
+    
     public int getPonteiro() {
         return ponteiro;
     }
@@ -53,21 +67,35 @@ public class Fita {
     public char anda(char sentido){
        if(sentido == 'R'){
            ponteiro++;
-           return conteudo[ponteiro];
+           if(ponteiro == this.conteudo.length()){
+               this.conteudo.append("*");
+           }
+           //return conteudo[ponteiro];
+           return this.conteudo.charAt(ponteiro);
        }else if(sentido == 'L'){
            ponteiro--;
-           return conteudo[ponteiro];
+           if(ponteiro == -1){
+               this.conteudo.insert(0, "*");
+               ponteiro = 0;
+           }
+           //return conteudo[ponteiro];
+           return this.conteudo.charAt(ponteiro);
        }
        
-       return conteudo[ponteiro];
+       //return conteudo[ponteiro];
+       return this.conteudo.charAt(ponteiro);
     }
     
     public char retorna(){
-        return conteudo[ponteiro];
+        //return conteudo[ponteiro];
+        return this.conteudo.charAt(ponteiro);
     }
     
     public void write(char c){
-     conteudo[ponteiro] = c;
+     //conteudo[ponteiro] = c;
+     
+     this.conteudo = this.conteudo.replace(ponteiro, ponteiro+1, ""+c);
+   
        
        
     }

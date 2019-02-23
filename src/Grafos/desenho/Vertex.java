@@ -15,20 +15,20 @@ public class Vertex {
     private boolean inicial = false;
     private Color colorSelected = Color.GREEN;
     private int position;
+    private String label;
 
     public Vertex() {
-
+   
     }
 
     public Vertex(float x, float y) {
-
         this.x = x;
         this.y = y;
 
     }
 
     public Vertex(float x, float y, String nomeVertice) {
-
+        label = nomeVertice;
         this.x = x;
         this.y = y;
         this.ID = nomeVertice;
@@ -91,7 +91,13 @@ public class Vertex {
             g2.setStroke(new java.awt.BasicStroke(3.0f));
             g2.setColor(Color.black);
             //g2.drawString(ID, x-ID.length()*3, y+ray/4);
-            g2.drawString(ID, x - ID.length() * 3, y + ray / 4);
+            String vaiAparecer = label;
+//            if(label.equals("")){
+//                vaiAparecer = ID;
+//            }else{
+//                vaiAparecer = label;
+//            }
+            g2.drawString(vaiAparecer, x - ID.length() * 3, y + ray / 4);
             //g2.drawString(ID, x-ID.length()*3, y-ray-3);
         }
         g2.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 1.0f));
@@ -173,4 +179,14 @@ public class Vertex {
     public void setSelected(Boolean flag) {
         this.selected = flag;
     }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+    
+    
 }

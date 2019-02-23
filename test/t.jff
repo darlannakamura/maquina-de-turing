@@ -4,20 +4,13 @@
 		<!--The list of states.-->
    <block id="0" name="q0">
        <tag>Machine0</tag>
-       <x>192.0</x>
-       <y>128.0</y>
-       <initial/>
+       <x>182.0</x>
+       <y>221.0</y>
    </block>
    <block id="1" name="q1">
        <tag>Machine1</tag>
-       <x>480.0</x>
-       <y>115.0</y>
-   </block>
-   <block id="2" name="q2">
-       <tag>Machine2</tag>
-       <x>700.0</x>
-       <y>157.0</y>
-       <final/>
+       <x>536.0</x>
+       <y>267.0</y>
    </block>
    <!--The list of transitions.-->
    <transition>
@@ -25,24 +18,17 @@
        <to>1</to>
        <read>a</read>
        <write>b</write>
-       <move>L</move>
+       <move>S</move>
    </transition>
    <transition>
-       <from>1</from>
-       <to>0</to>
+       <from>0</from>
+       <to>1</to>
        <read>c</read>
-       <write>a</write>
-       <move>R</move>
-   </transition>
-   <transition>
-       <from>1</from>
-       <to>2</to>
-       <read>a</read>
-<write/>       <move>S</move>
+       <write>d</write>
+       <move>S</move>
    </transition>
 <!--The list of automata-->
 <Machine0/>
 <Machine1/>
-<Machine2/>
  </automaton>
 </structure>

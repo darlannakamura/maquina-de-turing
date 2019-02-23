@@ -11,9 +11,9 @@ import java.util.ArrayList;
 
 public class Edge {
 
-    private Color color = Color.WHITE; 
+    private Color color = Color.WHITE;
     private Vertex source;
-    private Vertex target; 
+    private Vertex target;
     private int directed = 0;
     private Boolean selected = true;
     private Boolean show = true;
@@ -22,12 +22,23 @@ public class Edge {
     private char sentido; //'S' - Stop, 'L' - Left, 'R' - Right 
     private float xLabel;
     private float yLabel;
+    private TransicaoPorFita[] transicoes;
     private ArrayList<Transicao> values;
 
-    
     private final int peso;
 
-    public Edge(Vertex source, Vertex target, String label, String fita, char sentido){
+    public Edge(Vertex source, Vertex target, TransicaoPorFita[] transicoes) {
+        this.values = new ArrayList<>();
+        this.source = source;
+        this.target = target;
+        this.transicoes = transicoes;
+        this.peso = 0;
+    }
+
+    
+    
+    
+    public Edge(Vertex source, Vertex target, String label, String fita, char sentido) {
         values = new ArrayList<>();
         this.source = source;
         this.target = target;
@@ -36,7 +47,7 @@ public class Edge {
         this.sentido = sentido;
         this.peso = 0;
     }
-    
+
     public Edge(Vertex source, Vertex target, int peso, int directed) {
         values = new ArrayList<>();
         this.source = source;
@@ -52,95 +63,72 @@ public class Edge {
         this.label = label;
         this.peso = 0;
     }
-    
-    
-    
-    public void draw(java.awt.Graphics2D g2, ArrayList<Edge> edges) 
-    {
+
+    public void draw(java.awt.Graphics2D g2, ArrayList<Edge> edges) {
 
         g2.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 1.0f));
         g2.setStroke(new java.awt.BasicStroke(1.0f));
         g2.setColor(this.color.darker().darker());
-        
-        
-         Edge aux = null;
-        for(int i=0; i < edges.size(); i++){
-            if ((this.getTarget() == edges.get(i).getSource()) && (this.getSource() == edges.get(i).getTarget()))
+
+        Edge aux = null;
+        for (int i = 0; i < edges.size(); i++) {
+            if ((this.getTarget() == edges.get(i).getSource()) && (this.getSource() == edges.get(i).getTarget())) {
                 aux = edges.get(i);
+            }
         }
-      
-         Point a, b;
-        if (this.source.getID() != this.target.getID()) 
-        {
-               
-            if (aux == null) 
-            { // reta normal
+
+        Point a, b;
+        if (!this.source.getID().equals(this.target.getID())) {
+
+            if (aux == null) { // reta normal
                 g2.drawLine(((int) this.source.getX()), ((int) this.source.getY()), ((int) this.target.getX()), ((int) this.target.getY()));
                 g2.setStroke(new java.awt.BasicStroke(1.0f));
                 a = new Point((int) source.getX(), (int) source.getY());
                 b = new Point((int) target.getX(), (int) target.getY());
-            }
-            else
-            {  //curva
-                Point s = new Point((int)this.source.getX(), (int)this.source.getY());
-                Point t = new Point((int)this.target.getX(), (int)this.target.getY());
+            } else {  //curva
+                Point s = new Point((int) this.source.getX(), (int) this.source.getY());
+                Point t = new Point((int) this.target.getX(), (int) this.target.getY());
                 //achar o ponto do meio
-                int xMeio = (int)((s.getX() + t.getX())/2);
-                int yMeio = (int)((s.getY() + t.getY())/2);
+                int xMeio = (int) ((s.getX() + t.getX()) / 2);
+                int yMeio = (int) ((s.getY() + t.getY()) / 2);
                 Point meio;
-                
-                
+
                 //achar o quadrante do aux em relacao ao x
                 double dx = t.x - s.x, dy = t.y - s.y;
                 double theta = Math.toDegrees(Math.atan2(dy, dx));
 
-                if ((s.getX() <= t.getX()) && (s.getY() >= t.getY()))
-                { //primeiro quadrante
-                    if ((theta < 45)) 
-                    {
+                if ((s.getX() <= t.getX()) && (s.getY() >= t.getY())) { //primeiro quadrante
+                    if ((theta < 45)) {
                         meio = new Point(xMeio - 25, yMeio - 50);
-                    } else 
-                    {
+                    } else {
                         meio = new Point(xMeio - 50, yMeio - 25);
                     }
-                }
-                else if ((s.getX() > t.getX()) && (s.getY() >= t.getY()))
-                { //segundo quadrante
-                    if ((theta < 135)) 
-                    {
+                } else if ((s.getX() > t.getX()) && (s.getY() >= t.getY())) { //segundo quadrante
+                    if ((theta < 135)) {
                         meio = new Point(xMeio + 50, yMeio - 25);
-                    } else 
-                    {
+                    } else {
                         meio = new Point(xMeio + 25, yMeio - 50);
                     }
-                }
-                else if ((s.getX() > t.getX()) && (s.getY() <= t.getY()))
-                { //terceiro quadrante
-                   if ((theta < 225)) 
-                   {
+                } else if ((s.getX() > t.getX()) && (s.getY() <= t.getY())) { //terceiro quadrante
+                    if ((theta < 225)) {
                         meio = new Point(xMeio + 25, yMeio + 50);
-                    } else 
-                   {
+                    } else {
                         meio = new Point(xMeio + 50, yMeio + 25);
                     }
-                }
-                else 
-                { //quarto quadrante
-                    if ((theta < 315)) 
-                    {
+                } else { //quarto quadrante
+                    if ((theta < 315)) {
                         meio = new Point(xMeio - 50, yMeio + 25);
-                    } else 
-                    {
+                    } else {
                         meio = new Point(xMeio - 25, yMeio + 50);
                     }
                 }
-                
+
                 QuadCurve2D q = new QuadCurve2D.Float();
 
                 q.setCurve(s, meio, t);
-                g2.draw(q);                        
-                meio.x += (meio.x > xMeio ? -10: 10);
-                meio.y += (meio.y > yMeio ? -10: 10);
+                g2.draw(q);
+                meio.x += (meio.x > xMeio ? -10 : 10);
+                meio.y += (meio.y > yMeio ? -10 : 10);
                 a = meio;
                 b = t;
             }
@@ -155,77 +143,120 @@ public class Edge {
             desenhaHeadSeta(g2, a, b);
 
             g2.setColor(Color.BLACK);
-            for(int i = 0 ; i < values.size(); i++){
+            for (int i = 0; i < values.size(); i++) {
                 Transicao t = values.get(i);
-               
-                Point m = new Point((int)b.x, (int)b.y-i*45);
+
+                Point m = new Point((int) b.x, (int) b.y - i * 45);
                 //t.setPoint(m);
-                
-                desenhaLabel(g2, a, m, t.getLabel()+" ; "+t.getFita()+" ; "+t.getSentido());
-                
+
+                // desenhaLabel(g2, a, m, t.getLabel() + " ; " + t.getFita() + " ; " + t.getSentido());
+//                String newLabel = "";
+//                if (t.getLabel().equals("VAZIO")) {
+//                    newLabel += "λ ; ";
+//                }else{
+//                    newLabel += t.getLabel()+" ; ";
+//                }
+//                if (t.getFita().equals("VAZIO")) {
+//                    newLabel += "λ ; ";
+//                }else{
+//                    newLabel += t.getFita()+" ; ";
+//                }
+//                newLabel += "" + t.getSentido();
+
+                desenhaLabel(g2, a, m, t.getLabel());
+
             }
-        } else 
-        { 
+        } else {
             g2.drawOval((int) (this.source.getX()) - 15, (int) (this.source.getY()) - 50, this.source.getRay() + 10, this.source.getRay() + 20);
-            
-            Point c = new Point((int)this.source.getX() - 20, (int)this.source.getY() - 50);
-            Point d = new Point((int)this.target.getX() - 11, (int)this.target.getY() - 15);
+
+            Point c = new Point((int) this.source.getX() - 20, (int) this.source.getY() - 50);
+            Point d = new Point((int) this.target.getX() - 11, (int) this.target.getY() - 15);
             desenhaHeadSeta(g2, c, d);
 
             g2.setColor(Color.BLACK);
-            Point l = new Point((int)this.source.getX()-10, (int)this.source.getY() - 55);
-            for(int i = 0 ; i < values.size(); i++){
+            Point l = new Point((int) this.source.getX() - 10, (int) this.source.getY() - 55);
+            for (int i = 0; i < values.size(); i++) {
                 Transicao t = values.get(i);
-                Point m = new Point((int)this.source.getX()-10, (int)this.source.getY()- 55 -i*20);
+                Point m = new Point((int) this.source.getX() - 10, (int) this.source.getY() - 55 - i * 20);
                 //desenhaLabel(g2, m, m, values.get(i).getLabel());
                 //desenhaLabel(g2, m, m, values.get(i).getLabel());
                 //t.setPoint(m);
-                
-                desenhaLabel(g2, m, m, t.getLabel()+" ; "+t.getFita()+" ; "+t.getSentido());
+//                String newLabel = "";
+//                if (t.getLabel().equals("VAZIO")) {
+//                    newLabel += "λ ; ";
+//                }
+//                else{
+//                    newLabel += t.getLabel()+" ; ";
+//                }
+//                      
+//                if (t.getFita().equals("VAZIO")) {
+//                    newLabel += "λ ; ";
+//                }
+//                else{
+//                    newLabel+= t.getFita()+" ; ";
+//                }
+//                newLabel += "" + t.getSentido();
 
+                //desenhaLabel(g2, m, m, t.getLabel() + " ; " + t.getFita() + " ; " + t.getSentido());
+                desenhaLabel(g2, m, m, t.getLabel());
 
-                
             }
         }
-            
+
         g2.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 1.0f));
     }
-    
-    private void desenhaHeadSeta(Graphics2D g2, Point origem, Point destino)  
-    {  
-        double dy = destino.y - origem.y;  
-        double dx = destino.x - origem.x;  
+
+    private void desenhaHeadSeta(Graphics2D g2, Point origem, Point destino) {
+        double dy = destino.y - origem.y;
+        double dx = destino.x - origem.x;
         double theta = Math.atan2(dy, dx);
         double phi = Math.toRadians(20);
-        double rho = theta + phi;  
+        double rho = theta + phi;
         int tam = 10;
         Polygon pol = new Polygon();
         pol.addPoint(destino.x, destino.y);
-        pol.addPoint( (int)(destino.x - tam * Math.cos(rho)),(int)(destino.y - tam * Math.sin(rho)));
+        pol.addPoint((int) (destino.x - tam * Math.cos(rho)), (int) (destino.y - tam * Math.sin(rho)));
         rho = theta - phi;
-        pol.addPoint( (int)(destino.x - tam * Math.cos(rho)),(int)(destino.y - tam * Math.sin(rho)));
+        pol.addPoint((int) (destino.x - tam * Math.cos(rho)), (int) (destino.y - tam * Math.sin(rho)));
         g2.fillPolygon(pol);
     }
 
-    private void desenhaLabel(Graphics2D g2, Point s, Point t, String label) 
-    {
+    private void desenhaLabel(Graphics2D g2, Point s, Point t, String label) {
         int transX = (int) ((t.x + s.x) * 0.5f); //metade da reta
         int transY = (int) ((t.y + s.y) * 0.5f); //metade da reta  
-        
-        xLabel = transX-label.length()*2;
-        yLabel = transY -5;
-        
-        for(int i = 0; i < this.values.size(); i++){
+
+        xLabel = transX - label.length() * 2;
+        yLabel = transY - 5;
+
+        for (int i = 0; i < this.values.size(); i++) {
             Transicao aux = this.values.get(i);
-            String labelValue = aux.getLabel()+" ; "+aux.getFita()+" ; "+aux.getSentido();
-            if(labelValue.equals(label)) this.values.get(i).setPoint(new Point((int)transX-label.length()*2, (int)transY-5));
+            String labelValue = "";
+            //String labelValue = aux.getLabel()+" ; "+aux.getFita()+" ; "+aux.getSentido();
+//            if (aux.getLabel().equals("VAZIO")) {
+//                labelValue += "λ ; ";
+//            }
+//            else{
+//                labelValue += aux.getLabel()+" ; ";
+//            }
+//            if (aux.getFita().equals("VAZIO")) {
+//                labelValue += "λ ; ";
+//            }else{
+//                labelValue += aux.getFita()+" ; ";
+//            }
+//            labelValue += "" + aux.getSentido();
+
+            if (aux.getLabel().equals(label)) {
+                   // this.values.get(i).setPoint(new Point((int) transX - label.length() * 2 + 40 , (int) transY - 5));
+            //this.values.get(i).setPoint(new Point((int) transX  , (int) transY));
+            this.values.get(i).setPoint(new Point((int) xLabel  , (int) yLabel));
+            }
         }
-        
-        g2.drawString(label, transX-label.length()*2, transY - 5);
+
+            //g2.drawString(label, transX - label.length() * 2, transY - 5);
+            g2.drawString(label, xLabel, yLabel);
     }
-    
-        private void desenhaTriangulo(Graphics g1, int x1, int y1, int x2, int y2) 
-        {
+
+    private void desenhaTriangulo(Graphics g1, int x1, int y1, int x2, int y2) {
         Graphics2D g = (Graphics2D) g1.create();
         double dx = (x2 - x1), dy = (y2 - y1);
         double angle = Math.atan2(dy, dx);
@@ -238,8 +269,17 @@ public class Edge {
         g.fillPolygon(new int[]{len, len - 5, len - 5, len},
                 new int[]{0, -5, 5, 0}, 4);
 
-
     }
+
+    public TransicaoPorFita[] getTransicoes() {
+        return transicoes;
+    }
+
+    public void setTransicoes(TransicaoPorFita[] transicoes) {
+        this.transicoes = transicoes;
+    }
+    
+    
 
     public String getLabel() {
         return label;
@@ -289,12 +329,6 @@ public class Edge {
         this.sentido = sentido;
     }
 
-    
-    
-    
-
-
-
     public int isDirected() {
         return directed;
     }
@@ -330,13 +364,13 @@ public class Edge {
     public int getPeso() {
         return peso;
     }
-    
-    public Boolean getShow(){
+
+    public Boolean getShow() {
         return this.show;
     }
-     
-    public void setShow(Boolean op){
-        this.show = op;    
+
+    public void setShow(Boolean op) {
+        this.show = op;
     }
-    
+
 }

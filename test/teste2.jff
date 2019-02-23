@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--Created with Nakamura and Santos JFlap - 2017.--><structure>
+<type>turing</type>
+  <automaton>
+		<!--The list of states.-->
+   <block id="0" name="q5">
+       <tag>Machine0</tag>
+       <x>222.0</x>
+       <y>174.0</y>
+       <initial/>
+   </block>
+   <block id="1" name="q6">
+       <tag>Machine1</tag>
+       <x>440.0</x>
+       <y>176.0</y>
+   </block>
+   <block id="2" name="q3">
+       <tag>Machine2</tag>
+       <x>672.0</x>
+       <y>197.0</y>
+   </block>
+   <block id="3" name="q4">
+       <tag>Machine3</tag>
+       <x>859.0</x>
+       <y>204.0</y>
+       <final/>
+   </block>
+   <!--The list of transitions.-->
+   <transition>
+       <from>0</from>
+       <to>0</to>
+       <read>a</read>
+       <write>b</write>
+       <move>R</move>
+   </transition>
+   <transition>
+       <from>0</from>
+       <to>1</to>
+       <read>b</read>
+       <write>c</write>
+       <move>R</move>
+   </transition>
+   <transition>
+       <from>1</from>
+       <to>1</to>
+       <read>b</read>
+       <write>a</write>
+       <move>L</move>
+   </transition>
+   <transition>
+       <from>1</from>
+       <to>1</to>
+       <read>c</read>
+       <write>b</write>
+       <move>L</move>
+   </transition>
+   <transition>
+       <from>1</from>
+       <to>2</to>
+<read/>
+<write/>
+       <move>L</move>
+   </transition>
+   <transition>
+       <from>2</from>
+       <to>2</to>
+       <read>c</read>
+       <write>g</write>
+       <move>L</move>
+   </transition>
+   <transition>
+       <from>2</from>
+       <to>2</to>
+       <read>b</read>
+       <write>h</write>
+       <move>L</move>
+   </transition>
+   <transition>
+       <from>2</from>
+       <to>3</to>
+<read/>
+<write/>
+       <move>R</move>
+   </transition>
+<!--The list of automata-->
+<Machine0/>
+<Machine1/>
+<Machine2/>
+<Machine3/>
+ </automaton>
+</structure>

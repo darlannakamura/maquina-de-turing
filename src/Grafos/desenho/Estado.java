@@ -5,6 +5,8 @@
  */
 package Grafos.desenho;
 
+import Grafos.antigo.ArestaAntiga;
+
 /**
  *
  * @author Darlan Nakamura

@@ -5,28 +5,32 @@
  */
 package Grafos.desenho;
 
+import Automato.visual.Elemento;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  *
- * @author Darlan Nakamura
+ * @author darla
  */
-public class Fila {
-    List<Estado> lista;
+public class FilaIndices {
+        List<Elemento> lista;
  
-    public Fila(){
+    public FilaIndices(){
          this.lista = new LinkedList<>();
     }
-    public void insere(Estado estado){
+    public void insere(Elemento estado){
         //Estrutura e = new Estrutura(estado, index);
         this.lista.add(estado);
     }
-    public Estado remove(){
+    public Elemento remove(){
         return this.lista.remove(0);
     }
     public boolean vazia(){
         return this.lista.isEmpty();
     }
     
+    public int size(){
+        return this.lista.size();
+    }
 }

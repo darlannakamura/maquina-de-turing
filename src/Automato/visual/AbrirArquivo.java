@@ -108,7 +108,7 @@ public class AbrirArquivo extends javax.swing.JFrame {
     
    public void abreArquivo(String path) throws FileNotFoundException {
        
-        graph = new Graph();
+       
         FileReader fr = new FileReader(path);
         BufferedReader br = new BufferedReader(fr);
         try {

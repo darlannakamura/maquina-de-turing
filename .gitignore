@@ -24,3 +24,8 @@ hs_err_pid*
 build/
 
 nbproject/
+
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
